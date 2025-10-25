@@ -1,0 +1,76 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Custom styles can go here */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.sidebar {
+  min-height: 100vh;
+}
+
+.main-content {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    margin-left: 250px;
+  }
+}
+.hover-border-blue:hover {
+  border-color: #0d6efd !important;
+}
+
+.hover-bg-blue-50:hover {
+  background-color: rgba(13, 110, 253, 0.05) !important;
+}
+
+.hover-border-green:hover {
+  border-color: #198754 !important;
+}
+
+.hover-bg-green-50:hover {
+  background-color: rgba(25, 135, 84, 0.05) !important;
+}
+
+.hover-border-warning:hover {
+  border-color: #ffc107 !important;
+}
+
+.hover-bg-warning-50:hover {
+  background-color: rgba(255, 193, 7, 0.05) !important;
+}
+
+.bg-purple {
+  background-color: #6f42c1 !important;
+}
+
+.text-purple {
+  color: #6f42c1 !important;
+}
+
+.border-purple {
+  border-color: #6f42c1 !important;
+}
+/* Admin dashboard tabs */
+.nav-tabs .nav-link {
+  color: #6c757d;
+  border: none;
+  padding: 0.75rem 1.5rem;
+}
+
+.nav-tabs .nav-link.active {
+  color: #0d6efd;
+  background: transparent;
+  border-bottom: 3px solid #0d6efd;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #0d6efd;
+  border-bottom: 3px solid #dee2e6;
+}
+
+.nav-tabs .nav-link.active:hover {
+  border-bottom: 3px solid #0d6efd;
+}
