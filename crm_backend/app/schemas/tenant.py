@@ -38,6 +38,12 @@ class User(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    user_id: int
+    email: str
+    full_name: Optional[str] = None
+    tenant_id: Optional[int] = None
+    is_superuser: bool
+    is_admin: bool
 
 class TokenData(BaseModel):
     email: Optional[str] = None

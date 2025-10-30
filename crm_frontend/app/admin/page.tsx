@@ -31,7 +31,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!isLoading && !isAdmin) {
       console.log('Redirecting to dashboard - user is not admin');
-      router.push('/dashboard');
+      router.replace('/login');
     }
   }, [isAdmin, isLoading, router]);
 

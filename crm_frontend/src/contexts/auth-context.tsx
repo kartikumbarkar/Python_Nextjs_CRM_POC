@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, authApi, AuthResponse } from '../lib/api';
+import { useRouter } from 'next/navigation'; 
+
 
 interface AuthContextType {
   user: User | null;
@@ -115,15 +117,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = () => {
-    console.log('Logging out');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userData');
-    localStorage.removeItem('tenantId');
-    setUser(null);
-    setToken(null);
-    setTenantId(null);
-  };
+const router = useRouter(); // ✅ Initialize router at the top of AuthProvider
+
+const logout = () => {
+  console.log('Logging out');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('userData');
+  localStorage.removeItem('tenantId');
+  setUser(null);
+  setToken(null);
+  setTenantId(null);
+
+  router.replace('/login'); // ✅ Redirect user to login page after logout
+};
+
 
   const value: AuthContextType = {
     user,
