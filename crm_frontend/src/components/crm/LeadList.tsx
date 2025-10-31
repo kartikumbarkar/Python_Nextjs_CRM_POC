@@ -5,11 +5,14 @@ import Link from 'next/link';
 import { Lead } from '@/lib/api';
 import { crmApi } from '@/lib/api';
 import { Card, Table, Button, Badge, Spinner, Alert } from 'react-bootstrap';
+import { LeadForm } from './LeadForm';
 
 const LeadList: React.FC = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [editingLead, setEditingLead] = useState<Lead | null>(null);
+  const [deleting, setDeleting] = useState<number | null>(null);
 
   useEffect(() => {
     fetchLeads();
@@ -21,22 +24,44 @@ const LeadList: React.FC = () => {
       setLeads(data);
     } catch (err: any) {
       setError('Failed to load leads');
-      console.error('Error fetching leads:', err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
+  /** ✅ DELETE HANDLER **/
   const handleDelete = async (id: number) => {
-    if (confirm('Are you sure you want to delete this lead?')) {
-      try {
-        await crmApi.deleteLead(id);
-        setLeads(leads.filter(lead => lead.id !== id));
-      } catch (err: any) {
-        setError('Failed to delete lead');
-      }
+    if (!confirm('Are you sure you want to delete this lead?')) return;
+    setDeleting(id);
+    try {
+      await crmApi.deleteLead(id);
+      setLeads(prev => prev.filter(lead => lead.id !== id));
+    } catch (err: any) {
+      setError('Failed to delete lead');
+    } finally {
+      setDeleting(null);
     }
   };
+
+  /** ✅ EDIT HANDLER **/
+  const handleEdit = (lead: Lead) => {
+    setEditingLead(lead);
+  };
+
+  /** ✅ UPDATE HANDLER **/
+  const handleUpdate = async (data: any) => {
+    if (!editingLead) return;
+    try {
+      await crmApi.updateLead(editingLead.id, data);
+      setEditingLead(null);
+      fetchLeads();
+    } catch (err: any) {
+      setError('Failed to update lead');
+    }
+  };
+
+  const handleCancelEdit = () => setEditingLead(null);
 
   const getStatusVariant = (status: string) => {
     switch (status.toLowerCase()) {
@@ -48,39 +73,44 @@ const LeadList: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <Card>
         <Card.Body className="text-center">
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
+          <Spinner animation="border" role="status" />
           <p className="mt-2 mb-0">Loading leads...</p>
         </Card.Body>
       </Card>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
       <Alert variant="danger">
         <i className="bi bi-exclamation-triangle me-2"></i>
         {error}
       </Alert>
     );
-  }
 
+  /** ✅ EDIT MODE **/
+  if (editingLead)
+    return (
+      <LeadForm
+        lead={editingLead}
+        onSubmit={handleUpdate}
+        onCancel={handleCancelEdit}
+      />
+    );
+
+  /** ✅ NORMAL TABLE VIEW **/
   return (
     <Card>
       <Card.Header className="d-flex justify-content-between align-items-center">
         <h5 className="mb-0">
-          <i className="bi bi-graph-up-arrow me-2"></i>
-          Leads
+          <i className="bi bi-graph-up-arrow me-2"></i> Leads
         </h5>
         <Link href="/leads/create">
           <Button variant="success" size="sm">
-            <i className="bi bi-plus-circle me-1"></i>
-            Add Lead
+            <i className="bi bi-plus-circle me-1"></i> Add Lead
           </Button>
         </Link>
       </Card.Header>
@@ -100,7 +130,7 @@ const LeadList: React.FC = () => {
                 <th>Title</th>
                 <th>Status</th>
                 <th>Source</th>
-                <th>Contact ID</th>
+                <th>Contact</th>
                 <th>Created</th>
                 <th>Actions</th>
               </tr>
@@ -108,40 +138,33 @@ const LeadList: React.FC = () => {
             <tbody>
               {leads.map((lead) => (
                 <tr key={lead.id}>
+                  <td>{lead.title}</td>
                   <td>
-                    <div className="fw-semibold">{lead.title}</div>
-                    {lead.description && (
-                      <small className="text-muted">
-                        {lead.description.length > 50 
-                          ? `${lead.description.substring(0, 50)}...` 
-                          : lead.description
-                        }
-                      </small>
-                    )}
-                  </td>
-                  <td>
-                    <Badge bg={getStatusVariant(lead.status)}>
-                      {lead.status}
-                    </Badge>
+                    <Badge bg={getStatusVariant(lead.status)}>{lead.status}</Badge>
                   </td>
                   <td>{lead.source || '-'}</td>
                   <td>{lead.contact_id || '-'}</td>
-                  <td>
-                    {new Date(lead.created_at).toLocaleDateString()}
-                  </td>
+                  <td>{new Date(lead.created_at).toLocaleDateString()}</td>
                   <td>
                     <div className="d-flex gap-2">
-                      <Link href={`/leads/${lead.id}`}>
-                        <Button variant="outline-primary" size="sm">
-                          <i className="bi bi-pencil"></i>
-                        </Button>
-                      </Link>
-                      <Button 
-                        variant="outline-danger" 
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => handleEdit(lead)}
+                      >
+                        <i className="bi bi-pencil"></i>
+                      </Button>
+                      <Button
+                        variant="outline-danger"
                         size="sm"
                         onClick={() => handleDelete(lead.id)}
+                        disabled={deleting === lead.id}
                       >
-                        <i className="bi bi-trash"></i>
+                        {deleting === lead.id ? (
+                          <Spinner size="sm" animation="border" />
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
                       </Button>
                     </div>
                   </td>

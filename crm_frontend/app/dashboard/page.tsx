@@ -342,7 +342,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, color, href, icon }) 
   const colorClasses = {
     blue: { bg: 'bg-primary', text: 'text-primary', border: 'border-primary' },
     green: { bg: 'bg-success', text: 'text-success', border: 'border-success' },
-    purple: { bg: 'bg-purple', text: 'text-purple', border: 'border-purple' },
+    purple: { bg: 'bg-purple', text: 'text-warning', border: 'border-blue' },
   };
 
   const colors = colorClasses[color];

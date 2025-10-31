@@ -184,6 +184,20 @@ export const authApi = {
     return response.data;
   },
 };
+export interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  due_date?: string; // ISO string
+  status?: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  priority?: 'low' | 'medium' | 'high';
+  assigned_to?: number | null; // user id
+  contact_id?: number | null;
+  lead_id?: number | null;
+  opportunity_id?: number | null;
+  created_at?: string;
+  updated_at?: string;
+}
 
 /* ============================================================
    ADMIN API
@@ -348,3 +362,33 @@ export const crmApi = {
     await api.delete(`/crm/opportunities/${id}`);
   },
 };
+// --- types (add near other interfaces) ---
+
+
+// --- tasks API (add near pipelineApi or crmApi) ---
+export const tasksApi = {
+  getTasks: async (): Promise<Task[]> => {
+    const response = await api.get('/tasks/');
+    return response.data;
+  },
+
+  getTask: async (id: number): Promise<Task> => {
+    const response = await api.get(`/tasks/${id}`);
+    return response.data;
+  },
+
+  createTask: async (data: Omit<Task, 'id' | 'created_at' | 'updated_at'>): Promise<Task> => {
+    const response = await api.post('/tasks/', data);
+    return response.data;
+  },
+
+  updateTask: async (id: number, data: Partial<Task>): Promise<Task> => {
+    const response = await api.put(`/tasks/${id}`, data);
+    return response.data;
+  },
+
+  deleteTask: async (id: number): Promise<void> => {
+    await api.delete(`/tasks/${id}`);
+  },
+};
+

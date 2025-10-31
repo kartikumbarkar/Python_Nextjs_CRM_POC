@@ -14,6 +14,7 @@ export const Sidebar: React.FC = () => {
     { name: 'Contacts', href: '/contacts', icon: 'bi-people' },
     { name: 'Leads', href: '/leads', icon: 'bi-graph-up-arrow' },
     { name: 'Opportunities', href: '/opportunities', icon: 'bi-briefcase' },
+    { name: 'Tasks', href: '/tasks', icon: 'bi-check2-square' },
   ];
 
   // Add admin link if user is admin
