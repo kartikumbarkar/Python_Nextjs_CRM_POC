@@ -30,6 +30,7 @@ class User(UserBase):
     is_active: bool
     is_superuser: bool
     tenant_id: int
+    tenant_name: Optional[str] = None
     created_at: datetime
     
     class Config:

@@ -6,6 +6,10 @@ from app.services.tenant import tenant_service
 from app.core.security import verify_password, create_access_token
 
 router = APIRouter()
+@staticmethod
+def get_tenant_by_name(db: Session, name: str):
+    """Fetch tenant object by name (case-insensitive)."""
+    return db.query(Tenant).filter(Tenant.name.ilike(name)).first()
 
 @router.post("/tenants/", response_model=Tenant)
 def create_tenant(tenant: TenantCreate, db: Session = Depends(get_db)):
