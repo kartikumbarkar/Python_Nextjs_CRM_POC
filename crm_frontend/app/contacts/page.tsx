@@ -1,15 +1,50 @@
-import ContactList from '../../src/components/crm/ContactList'; // Remove curly braces
-import { Container, Row, Col } from 'react-bootstrap';
+'use client';
+
+import { useState } from 'react';
+import ContactList from '../../src/components/crm/ContactList';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Sidebar } from '../../src/components/layout/sidebar';
 
 export default function ContactsPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
   return (
-    <Container fluid className="p-4">
-      <Row>
-        <Col>
-          <div className="mb-4">
-            <h1 className="h2 mb-2">Contacts</h1>
-            <p className="text-muted">Manage your contacts and customer information</p>
+    <Container fluid className="p-0">
+      <Row className="g-0">
+        {/* Sidebar */}
+        {sidebarOpen && (
+          <Col
+            md={2}
+            lg={2}
+            className="bg-light border-end vh-100 position-sticky d-none d-md-block"
+            style={{ top: 0 }}
+          >
+            <Sidebar />
+          </Col>
+        )}
+
+        {/* Main Content */}
+        <Col className="p-4" md={sidebarOpen ? 10 : 12} lg={sidebarOpen ? 10 : 12}>
+          {/* Header + Toggle Button */}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h1 className="h2 mb-2">Contacts</h1>
+              <p className="text-muted mb-0">
+                Manage your contacts and customer information
+              </p>
+            </div>
+
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              className="d-md-none d-block"
+              onClick={toggleSidebar}
+            >
+              <i className={`bi ${sidebarOpen ? 'bi-x-lg' : 'bi-list'}`}></i>
+            </Button>
           </div>
+
           <ContactList />
         </Col>
       </Row>
